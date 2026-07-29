@@ -1,4 +1,4 @@
-instgit ls-files | Select-String -Pattern makefileall:
+install:
     pip install --upgrade pip &&\
         pip install -r requirements.txt
 
