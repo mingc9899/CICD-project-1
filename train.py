@@ -54,6 +54,16 @@ disp.plot()
 plt.savefig("Results/model_results.png", dpi = 120)
 
 sio.dump(pipe, "Model/drug_pipeline.skops")
-untrusted_types = sio.get_untrusted_types(file="Model/drug_pipeline.skops")
-drug_pipeline = sio.load("Model/drug_pipeline.skops", trusted=untrusted_types)
+trusted_types = [
+    "sklearn.pipeline.Pipeline",
+    "sklearn.preprocessing.OneHotEncoder",
+    "sklearn.preprocessing.StandardScaler",
+    "sklearn.compose.ColumnTransformer",
+    "sklearn.preprocessing.OrdinalEncoder",
+    "sklearn.impute.SimpleImputer",
+    "sklearn.tree.DecisionTreeClassifier",
+    "sklearn.ensemble.RandomForestClassifier",
+    "numpy.dtype",
+]
+drug_pipeline = sio.load("Model/drug_pipeline.skops", trusted=trusted_types)
 print(drug_pipeline)
