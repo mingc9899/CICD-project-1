@@ -18,40 +18,39 @@ X = drug_df.drop("Drug", axis=1).values
 y = drug_df.Drug.values
 
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size = 0.3, random_state = 125
+    X, y, test_size=0.3, random_state=125
 )
 
-cat_col = [1,2,3]
-num_col = [0,4]
+cat_col = [1, 2, 3]
+num_col = [0, 4]
 
 transform = ColumnTransformer(
     [
         ("encoder", OrdinalEncoder(), cat_col),
-        ("num_imputer", SimpleImputer(strategy = "median"), num_col),
+        ("num_imputer", SimpleImputer(strategy="median"), num_col),
         ("num_scaler", StandardScaler(), num_col),
-
     ]
 )
 pipe = Pipeline(
-    steps = [
+    steps=[
         ("preprocessing", transform),
-        ("model", RandomForestClassifier(n_estimators = 100, random_state = 125 )),
+        ("model", RandomForestClassifier(n_estimators=100, random_state=125)),
     ]
 )
 pipe.fit(X_train, y_train)
 
 predictions = pipe.predict(X_test)
 accuracy = accuracy_score(y_test, predictions)
-f1 = f1_score(y_test, predictions, average = "macro")
-print ("Accuracy:", str(round(accuracy, 2) * 100) + "%","F1:", round(f1, 2))
+f1 = f1_score(y_test, predictions, average="macro")
+print("Accuracy:", str(round(accuracy, 2) * 100) + "%", "F1:", round(f1, 2))
 
 with open("Results/metrics.txt", "w") as outfile:
     outfile.write(f"\nAccuracy = {round(accuracy, 2)}, F1 Score = {round(f1, 2)}.")
 
-cm = confusion_matrix(y_test, predictions, labels = pipe.classes_)
-disp = ConfusionMatrixDisplay(confusion_matrix = cm, display_labels = pipe.classes_)
+cm = confusion_matrix(y_test, predictions, labels=pipe.classes_)
+disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=pipe.classes_)
 disp.plot()
-plt.savefig("Results/model_results.png", dpi = 120)
+plt.savefig("Results/model_results.png", dpi=120)
 
 sio.dump(pipe, "Model/drug_pipeline.skops")
 trusted_types = [
